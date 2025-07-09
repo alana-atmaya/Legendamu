@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Legendamu - Pendekar Cinematic</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to bottom, #1b1b1b, #383838);
+      color: white;
+      text-align: center;
+    }
+    header {
+      padding: 2rem 1rem;
+      background: #121212;
+    }
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    main {
+      padding: 2rem 1rem;
+    }
+    input[type="file"] {
+      margin: 1rem 0;
+    }
+    .preview {
+      margin-top: 1rem;
+      max-width: 100%;
+    }
+    button {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      background: #ff6600;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #e65c00;
+    }
+    footer {
+      margin-top: 2rem;
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+    #downloadLink {
+      display: none;
+      margin-top: 1rem;
+      color: #00ffcc;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎬 Legendamu: Pendekar Cinematic</h1>
+    <p>Buat video sinematik dari gambar pendekarmu</p>
+  </header>
+  <main>
+    <h2>Upload Gambar Pendekar</h2>
+    <form id="uploadForm" enctype="multipart/form-data">
+      <input type="file" id="imageUpload" name="image" accept="image/*" onchange="previewImage(event)" required />
+      <br />
+      <img id="preview" class="preview" style="display:none;"/>
+      <br />
+      <button type="submit">🎞️ Buat Video Cinematic</button>
+    </form>
+    <a id="downloadLink" href="#" download>📥 Unduh Video Cinematic</a>
+  </main>
+  <footer>
+    <p>&copy; 2025 Legendamu. Dibuat dengan semangat oleh kamu dan ChatGPT.</p>
+  </footer>
+
+  <script>
+    function previewImage(event) {
+      const image = document.getElementById('preview');
+      image.src = URL.createObjectURL(event.target.files[0]);
+      image.style.display = 'block';
+    }
+
+    const form = document.getElementById('uploadForm');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+
+      const response = await fetch('/generate', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.getElementById('downloadLink');
+        link.href = url;
+        link.style.display = 'block';
+      } else {
+        alert('❌ Gagal membuat video. Coba lagi nanti.');
+      }
+    });
+  </script>
+</body>
+</html>
